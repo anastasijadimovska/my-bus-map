@@ -3,21 +3,19 @@ package mk.com.finki.mybusmap.service;
 
 import mk.com.finki.mybusmap.model.UserInfo;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class UserInfoDetails implements UserDetails {
 
-    private String username; // Changed from 'name' to 'username' for clarity
+    private String email; // Changed from 'name' to 'username' for clarity
     private String password;
     private List<GrantedAuthority> authorities;
 
     public UserInfoDetails(UserInfo userInfo) {
-        this.username = userInfo.getName(); // Assuming 'name' is used as 'username'
+        this.email = userInfo.getEmail();
         this.password = userInfo.getPassword();
     }
 
@@ -33,7 +31,7 @@ public class UserInfoDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override

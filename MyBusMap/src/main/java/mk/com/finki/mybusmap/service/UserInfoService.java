@@ -14,12 +14,16 @@ import java.util.Optional;
 
 @Service
 public class UserInfoService implements UserDetailsService {
-
-    @Autowired
     private UserInfoRepository repository;
-
-    @Autowired
     private PasswordEncoder encoder;
+
+    public UserInfoService(UserInfoRepository repository, PasswordEncoder encoder) {
+        this.repository = repository;
+        this.encoder = encoder;
+    }
+
+    public UserInfoService() {
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
