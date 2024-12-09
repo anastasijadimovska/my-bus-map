@@ -1,5 +1,9 @@
 springdoc:
   title: My Bus Map APIs
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /index.html
 spring:
 
   application:

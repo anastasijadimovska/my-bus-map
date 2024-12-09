@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,6 +27,10 @@ public class SecurityConfig {
 
     @Autowired
     private JwtAuthFilter authFilter;
+    @Autowired
+    private AuthenticationEntryPointHandler authenticationEntryPoint;
+    @Autowired
+    private AccessDeniedEntryPoint accessDeniedEntryPoint;
 
     @Bean
     @Lazy
@@ -38,10 +41,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable()) .exceptionHandling(exceptionHandling -> {
+                    exceptionHandling.authenticationEntryPoint(authenticationEntryPoint);
+                    exceptionHandling.accessDeniedHandler(accessDeniedEntryPoint);
+                })
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken", "/swagger-ui/**", "/index.html", "/swagger-ui.html", "/v3/api-docs/", "/v3/api-docs.yaml").permitAll()
-                        .requestMatchers("/auth/user/activeUser").hasAuthority("ROLE_USER")
+                        .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/auth/user/activeUser","/api/bus/**","/api/bus-stop/**","/api/bus-schedule/**").hasAuthority("ROLE_USER")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess

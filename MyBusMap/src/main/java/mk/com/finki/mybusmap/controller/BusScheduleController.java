@@ -1,4 +1,4 @@
-package mk.com.finki.mybusmap.controllers;
+package mk.com.finki.mybusmap.controller;
 
 import lombok.RequiredArgsConstructor;
 import mk.com.finki.mybusmap.model.BusSchedule;
