@@ -47,7 +47,7 @@ public class SecurityConfig {
                 })
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/auth/user/activeUser","/api/bus/**","/api/bus-stop/**","/api/bus-schedule/**").hasAuthority("ROLE_USER")
+                        .requestMatchers("/auth/user/activeUser","/api/bus/**","/api/bus-stop/**","/api/bus-schedule/**", "/auth/logout").hasAuthority("ROLE_USER")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess
