@@ -1,5 +1,6 @@
 package mk.com.finki.mybusmap.service;
 
+import mk.com.finki.mybusmap.model.BusLine;
 import mk.com.finki.mybusmap.model.BusSchedule;
 import mk.com.finki.mybusmap.model.dto.BusScheduleDto;
 
@@ -14,5 +15,7 @@ public interface BusScheduleService {
     List<BusSchedule> getBusSchedulesByBusStopId(Long busStopId);
     List<BusSchedule> findAllByArrivalTimeAndBusStop_Id(String arrivalTime, Long busStopId);
     List<BusSchedule> getBusSchedulesByBusId(Long busId);
+
+    List<BusLine> getBusLinesBetweenStops(String fromStopName, String toStopName);
 
 }

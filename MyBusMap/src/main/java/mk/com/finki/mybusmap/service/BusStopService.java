@@ -4,6 +4,7 @@ import mk.com.finki.mybusmap.model.BusStop;
 import mk.com.finki.mybusmap.model.dto.BusStopDto;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BusStopService {
     List<BusStop> getAllBusStops();
@@ -11,4 +12,5 @@ public interface BusStopService {
     BusStop getBusStopById(Long id);
     BusStop updateBusStop(Long id, BusStopDto busStopDto);
     void deleteBusStop(Long id);
+    Optional<BusStop> findBusStopByName(String name);
 }

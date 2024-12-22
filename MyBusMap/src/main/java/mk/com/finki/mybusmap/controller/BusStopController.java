@@ -7,6 +7,7 @@ import mk.com.finki.mybusmap.service.BusStopService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/bus-stop")
@@ -37,5 +38,10 @@ public class BusStopController {
     @DeleteMapping("/delete/{id}")
     public void deleteBusStop(@PathVariable Long id) {
         busStopService.deleteBusStop(id);
+    }
+
+    @GetMapping("/search")
+    public Optional<BusStop> getBusStopByName(@RequestParam String name) {
+        return busStopService.findBusStopByName(name);
     }
 }

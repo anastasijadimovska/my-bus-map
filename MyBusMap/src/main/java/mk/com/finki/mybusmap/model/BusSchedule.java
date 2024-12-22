@@ -23,5 +23,8 @@ public class BusSchedule {
     @ManyToOne
     @JoinColumn(name = "bus_id")
     private Bus bus;
+    @ManyToOne
+    @JoinColumn(name = "bus_line_id")
+    private BusLine busLine;
     private LocalTime arrivalTime;
 }

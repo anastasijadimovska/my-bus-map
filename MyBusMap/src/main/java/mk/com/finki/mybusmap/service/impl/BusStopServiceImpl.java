@@ -10,6 +10,7 @@ import mk.com.finki.mybusmap.service.BusStopService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -59,5 +60,10 @@ public class BusStopServiceImpl implements BusStopService {
     public void deleteBusStop(Long id) {
         busStopRepository.deleteById(id);
         log.info("Bus stop with id {} has been successfully deleted", id);
+    }
+
+    @Override
+    public Optional<BusStop> findBusStopByName(String name) {
+        return busStopRepository.findByName(name);
     }
 }
