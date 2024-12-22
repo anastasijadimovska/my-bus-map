@@ -13,6 +13,7 @@ import mk.com.finki.mybusmap.repository.BusStopRepository;
 import mk.com.finki.mybusmap.service.BusScheduleService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -81,5 +82,39 @@ public class BusScheduleServiceImpl implements BusScheduleService {
     public void deleteBusSchedule(Long id) {
         busScheduleRepository.deleteById(id);
         log.info("Bus schedule with id {} has been successfully deleted", id);
+    }
+
+    @Override
+    public List<BusSchedule> getBusSchedulesByBusStopId(Long busStopId) {
+        List<BusSchedule> busSchedules = busScheduleRepository.findAllByBusStop_Id(busStopId);
+        if(busSchedules.isEmpty()) {
+            log.error("Bus schedules for bus stop with id {} not found", busStopId);
+            throw new ResourceNotFoundException("Bus schedules for bus stop with id "+ busStopId +" not found");
+        }
+        log.info("Found bus schedules for bus stop with id {}", busStopId);
+        return busSchedules;
+    }
+
+    @Override
+    public List<BusSchedule> findAllByArrivalTimeAndBusStop_Id(String arrivalTime, Long busStopId) {
+        LocalTime localTime = LocalTime.parse(arrivalTime);
+        List<BusSchedule> busSchedules = busScheduleRepository.findAllByArrivalTimeAndBusStop_Id(localTime, busStopId);
+        if(busSchedules.isEmpty()) {
+            log.error("Bus schedules for bus stop with id {} and arrival time {} not found", busStopId, arrivalTime);
+            throw new ResourceNotFoundException("Bus schedules for bus stop with id "+ busStopId +" and arrival time "+ arrivalTime +" not found");
+        }
+        log.info("Found bus schedules for bus stop with id {} and arrival time {}", busStopId, arrivalTime);
+        return busSchedules;
+    }
+
+    @Override
+    public List<BusSchedule> getBusSchedulesByBusId(Long busId) {
+        List<BusSchedule> busSchedules = busScheduleRepository.findAllByBus_Id(busId);
+        if(busSchedules.isEmpty()) {
+            log.error("Bus schedules for bus with id {} not found", busId);
+            throw new ResourceNotFoundException("Bus schedules for bus with id "+ busId +" not found");
+        }
+        log.info("Found bus schedules for bus with id {}", busId);
+        return busSchedules;
     }
 }

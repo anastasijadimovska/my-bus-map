@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -23,5 +23,5 @@ public class BusSchedule {
     @ManyToOne
     @JoinColumn(name = "bus_id")
     private Bus bus;
-    private LocalDateTime arrivalTime;
+    private LocalTime arrivalTime;
 }
