@@ -17,6 +17,8 @@ public class SavedBusLines {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany
+    @ManyToMany
     private List<BusLine> busLines;
+    @OneToOne
+    private UserInfo userInfo;
 }

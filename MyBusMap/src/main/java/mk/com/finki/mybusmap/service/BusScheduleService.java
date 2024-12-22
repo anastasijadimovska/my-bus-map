@@ -11,4 +11,8 @@ public interface BusScheduleService {
     BusSchedule getBusScheduleById(Long id);
     BusSchedule updateBusSchedule(Long id, BusScheduleDto busScheduleDto);
     void deleteBusSchedule(Long id);
+    List<BusSchedule> getBusSchedulesByBusStopId(Long busStopId);
+    List<BusSchedule> findAllByArrivalTimeAndBusStop_Id(String arrivalTime, Long busStopId);
+    List<BusSchedule> getBusSchedulesByBusId(Long busId);
+
 }

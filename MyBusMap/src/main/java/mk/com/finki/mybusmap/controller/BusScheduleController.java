@@ -38,4 +38,19 @@ public class BusScheduleController {
     public void deleteBusSchedule(@PathVariable Long id) {
         busScheduleService.deleteBusSchedule(id);
     }
+
+    @GetMapping("/bus-stop/{busStopId}")
+    public List<BusSchedule> getBusSchedulesByBusStopId(@PathVariable Long busStopId) {
+        return busScheduleService.getBusSchedulesByBusStopId(busStopId);
+    }
+
+    @GetMapping("/bus/{busId}")
+    public List<BusSchedule> getBusSchedulesByBusId(@PathVariable Long busId) {
+        return busScheduleService.getBusSchedulesByBusId(busId);
+    }
+
+    @GetMapping("/arrival-time/bus-stop/{busStopId}")
+    public List<BusSchedule> findAllByArrivalTimeAndBusStop_Id(@RequestParam String arrivalTime, @PathVariable Long busStopId) {
+        return busScheduleService.findAllByArrivalTimeAndBusStop_Id(arrivalTime, busStopId);
+    }
 }
