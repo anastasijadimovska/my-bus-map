@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mk.com.finki.mybusmap.exceptions.ResourceNotFoundException;
 import mk.com.finki.mybusmap.model.Bus;
+import mk.com.finki.mybusmap.model.BusLine;
 import mk.com.finki.mybusmap.model.BusSchedule;
 import mk.com.finki.mybusmap.model.BusStop;
 import mk.com.finki.mybusmap.model.dto.BusScheduleDto;
@@ -14,7 +15,10 @@ import mk.com.finki.mybusmap.service.BusScheduleService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -23,6 +27,22 @@ public class BusScheduleServiceImpl implements BusScheduleService {
     private final BusRepository busRepository;
     private final BusStopRepository busStopRepository;
     private final BusScheduleRepository busScheduleRepository;
+
+    @Override
+    public List<BusLine> getBusLinesBetweenStops(String fromStopName, String toStopName) {
+        // Step 1: Fetch the bus stops by name
+        BusStop fromStop = busStopRepository.findByName(fromStopName)
+                .orElseThrow(() -> new ResourceNotFoundException("Bus stop not found: " + fromStopName));
+        BusStop toStop = busStopRepository.findByName(toStopName)
+                .orElseThrow(() -> new ResourceNotFoundException("Bus stop not found: " + toStopName));
+
+        // Step 2: Fetch bus lines that pass through both stops
+        List<BusLine> busLines = busScheduleRepository.findBusLinesBetweenStops(fromStop, toStop);
+
+        // Step 3: Return the result
+        return busLines;
+    }
+
 
     @Override
     public List<BusSchedule> getAllBusSchedules() {
