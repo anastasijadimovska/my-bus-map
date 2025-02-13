@@ -1,19 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getAllBusLines, deleteBusLine, getBusLinesBetweenStops } from '../api/busLineService';
-import {FaTrashAlt, FaEdit } from 'react-icons/fa'; // Add icons for edit and delete
+import { getAllBusLines, getBusLinesBetweenStops } from '../api/busLineService';
 
 const BusLineList = () => {
     const [busLines, setBusLines] = useState([]);
     const [fromStop, setFromStop] = useState('');
     const [toStop, setToStop] = useState('');
     const [error, setError] = useState('');
-    const navigate = useNavigate();
 
     useEffect(() => {
-        (async () => {
-            await loadBusLines();
-        })();
+        loadBusLines();
     }, []);
 
     const loadBusLines = async () => {
@@ -21,22 +16,13 @@ const BusLineList = () => {
             const data = await getAllBusLines();
             setBusLines(data);
         } catch {
-            setError('Failed to load bus lines.');
-        }
-    };
-
-    const handleDelete = async (id) => {
-        try {
-            await deleteBusLine(id);
-            setBusLines((prevBusLines) => prevBusLines.filter((line) => line.id !== id));
-        } catch {
-            setError('Failed to delete bus line.');
+            setError('Неуспешно вчитување на автобуски линии.');
         }
     };
 
     const handleSearch = async () => {
-        if (!fromStop || !toStop) {
-            setError('Please enter both stops.');
+        if (!fromStop.trim() || !toStop.trim()) {
+            setError('Внесете ги двете постојки.');
             return;
         }
         try {
@@ -44,71 +30,58 @@ const BusLineList = () => {
             setBusLines(data);
             setError('');
         } catch {
-            setError('Failed to fetch bus lines between stops.');
+            setError('Неуспешно пребарување.');
+        }
+    };
+
+    const handleInputChange = (setter) => (e) => {
+        setter(e.target.value);
+        if (e.target.value === '') {
+            loadBusLines();
+            setError('');
         }
     };
 
     return (
-        <div style={{ fontFamily: "'M PLUS Rounded 1c', sans-serif", backgroundColor: "#f4f7fa", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", paddingTop: "40px" }}>
-            <h1 style={{ fontSize: "3rem", color: "#08374b", fontWeight: "bold", marginBottom: "20px" }}>Автобуски Линии</h1>
+        <div style={{ fontFamily: "'M PLUS Rounded 1c', sans-serif", backgroundColor: "#eef4f8", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", paddingTop: "40px" }}>
+            <h1 style={{ fontSize: "2.5rem", color: "#08374b", fontWeight: "bold", marginBottom: "20px" }}>Автобуски Линии</h1>
 
             {error && <p style={{ color: 'red', fontSize: '1.2rem' }}>{error}</p>}
 
-            <div style={{ marginBottom: "20px", textAlign: "center" }}>
-                <button onClick={() => navigate('/bus-lines/add')} style={{
-                    padding: "10px 20px", backgroundColor: "#5c7f8e", color: "white", border: "none", borderRadius: "8px", fontSize: "1.1rem", cursor: "pointer", boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)"
-                }}>
-                    Додај нова линија
-                </button>
-            </div>
-
-            <div style={{ marginBottom: "30px", textAlign: "center" }}>
-                <h3 style={{ fontSize: "1.8rem", color: "#08374b", fontWeight: "bold" }}>Најди автобус меѓу постојки</h3>
+            <div style={{ marginBottom: "30px", textAlign: "center", backgroundColor: "#fff", padding: "20px", borderRadius: "12px", boxShadow: "0 6px 12px rgba(0, 0, 0, 0.15)" }}>
+                <h3 style={{ fontSize: "1.5rem", color: "#08374b", fontWeight: "bold", marginBottom: "10px" }}>Најди автобус меѓу постојки</h3>
                 <input
                     type="text"
                     placeholder="Од постојка"
                     value={fromStop}
-                    onChange={(e) => setFromStop(e.target.value)}
-                    style={{
-                        padding: "10px", margin: "10px", width: "200px", borderRadius: "8px", border: "1px solid #ccc", fontSize: "1rem"
-                    }}
+                    onChange={handleInputChange(setFromStop)}
+                    style={{ padding: "10px", margin: "5px", width: "220px", borderRadius: "8px", border: "1px solid #08374b", fontSize: "1rem", outline: "none" }}
                 />
                 <input
                     type="text"
                     placeholder="До постојка"
                     value={toStop}
-                    onChange={(e) => setToStop(e.target.value)}
-                    style={{
-                        padding: "10px", margin: "10px", width: "200px", borderRadius: "8px", border: "1px solid #ccc", fontSize: "1rem"
-                    }}
+                    onChange={handleInputChange(setToStop)}
+                    style={{ padding: "10px", margin: "5px", width: "220px", borderRadius: "8px", border: "1px solid #08374b", fontSize: "1rem", outline: "none" }}
                 />
-                <button onClick={handleSearch} style={{
-                    padding: "10px 20px", backgroundColor: "#5c7f8e", color: "white", border: "none", borderRadius: "8px", fontSize: "1.1rem", cursor: "pointer", boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)"
-                }}>
+                <button onClick={handleSearch} style={{ padding: "10px 20px", backgroundColor: "#08374b", color: "white", border: "none", borderRadius: "8px", fontSize: "1rem", cursor: "pointer", marginLeft: "10px", transition: "background 0.3s" }}
+                        onMouseEnter={(e) => (e.target.style.backgroundColor = "#0a4861")}
+                        onMouseLeave={(e) => (e.target.style.backgroundColor = "#08374b")}
+                >
                     Пребарај
                 </button>
             </div>
 
-            <ul style={{ listStyleType: "none", padding: "0", width: "80%", margin: "0 auto" }}>
+            <ul style={{ listStyleType: "none", padding: "0", width: "80%", maxWidth: "900px", margin: "0 auto" }}>
                 {busLines.map((line) => (
                     <li key={line.id} style={{
-                        backgroundColor: "#fff", padding: "20px", marginBottom: "15px", borderRadius: "10px", boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)", display: "flex", justifyContent: "space-between", alignItems: "center"
-                    }}>
-                        <div>
-                            <h4 style={{ fontSize: "1.6rem", color: "#08374b", fontWeight: "bold" }}>{line.name}: {line.bus.ownerName}</h4>
-                        </div>
-                        <div>
-                            <button onClick={() => navigate(`/bus-lines/edit/${line.id}`)} style={{
-                                padding: "8px 16px", backgroundColor: "#4e6b73", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", marginRight: "10px"
-                            }}>
-                                <FaEdit size={18} />
-                            </button>
-                            <button onClick={() => handleDelete(line.id)} style={{
-                                padding: "8px 16px", backgroundColor: "#d9534f", color: "white", border: "none", borderRadius: "8px", cursor: "pointer"
-                            }}>
-                                <FaTrashAlt size={18} />
-                            </button>
-                        </div>
+                        backgroundColor: "#fff", padding: "20px", marginBottom: "15px", borderRadius: "12px", boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+                        textAlign: "center", fontSize: "1.3rem", color: "#08374b", fontWeight: "bold", transition: "transform 0.2s, box-shadow 0.2s"
+                    }}
+                        onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.03)"; e.currentTarget.style.boxShadow = "0 6px 12px rgba(0, 0, 0, 0.2)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.1)"; }}
+                    >
+                        {line.name} - {line.bus.ownerName}
                     </li>
                 ))}
             </ul>
