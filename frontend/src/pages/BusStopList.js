@@ -85,18 +85,12 @@ const BusStopList = () => {
                 <div style={styles.resultContainer}>
                     <h2 style={styles.subheading}>Search Result:</h2>
                     <p style={styles.resultName}>{searchResult.name}</p>
-                    <button onClick={() => handleDelete(searchResult.id)} style={styles.deleteButton}>
-                        <FaTrashAlt /> Избриши
-                    </button>
                 </div>
             ) : (
                 <ul style={styles.busStopList}>
                     {busStops.map((stop) => (
                         <li key={stop.id} style={styles.busStopItem}>
                             {stop.name}
-                            <button onClick={() => handleDelete(stop.id)} style={styles.deleteButton}>
-                                <FaTrashAlt /> Избриши
-                            </button>
                         </li>
                     ))}
                 </ul>
