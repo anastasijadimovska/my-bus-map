@@ -1,52 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import {
     getAllBusSchedules,
-    getBusSchedulesByBusStopId,
     getBusSchedulesByBusId,
     findSchedulesByArrivalTime
 } from '../api/busScheduleService';
-import { getAllBusStops } from '../api/busStopService'; // Import API for bus stops
+import { getAllBusStops } from '../api/busStopService';
 
 const BusScheduleList = () => {
     const [schedules, setSchedules] = useState([]);
     const [busStopId, setBusStopId] = useState('');
     const [busId, setBusId] = useState('');
     const [arrivalTime, setArrivalTime] = useState('');
-    const [busStops, setBusStops] = useState([]); // Store bus stops
+    const [busStops, setBusStops] = useState([]);
     const [error, setError] = useState('');
 
-    // Fetch schedules & bus stops on mount
-    useEffect(() => {
+    // Function to load all schedules
+    const fetchAllSchedules = () => {
         getAllBusSchedules()
             .then(setSchedules)
             .catch(() => setError('Не можеме да ги вчитаме распоредите.'));
+    };
+
+    useEffect(() => {
+        // Set body background color
+        document.body.style.backgroundColor = "#f4f8fb";
+
+        fetchAllSchedules();
 
         getAllBusStops()
             .then(setBusStops)
             .catch(() => setError('Не можеме да ги вчитаме автобуските постојки.'));
     }, []);
 
-    const handleFetchByBusStop = async () => {
-        if (!busStopId) {
-            setError('Изберете постојка.');
-            return;
-        }
-
-        try {
-            const result = await getBusSchedulesByBusStopId(busStopId);
-            setSchedules(result);
-            setError('');
-        } catch {
-            setError('Нема распореди за оваа постојка.');
-        }
-    };
-
     const handleFetchByBusId = async () => {
         if (!busId.trim()) {
             setError('Внесете број на автобус.');
             return;
         }
-
         try {
             const result = await getBusSchedulesByBusId(busId);
             setSchedules(result);
@@ -57,11 +47,10 @@ const BusScheduleList = () => {
     };
 
     const handleFetchByArrivalTime = async () => {
-        if (!arrivalTime.trim() || !busStopId) {
-            setError('Изберете постојка и внесете време.');
+        if (!busStopId || !arrivalTime.trim()) {
+            setError('За пребарување по време, внесете и постојка и време.');
             return;
         }
-
         try {
             const result = await findSchedulesByArrivalTime(arrivalTime, busStopId);
             setSchedules(result);
@@ -71,47 +60,83 @@ const BusScheduleList = () => {
         }
     };
 
+    // Reset all search inputs and reload all schedules
+    const handleReset = () => {
+        setBusStopId('');
+        setBusId('');
+        setArrivalTime('');
+        setError('');
+        fetchAllSchedules();
+    };
+
     return (
         <div style={styles.container}>
             <h1 style={styles.title}>Распоред на автобуси</h1>
 
-            {/* Search Section */}
-            <div style={styles.searchBox}>
-                <select value={busStopId} onChange={(e) => setBusStopId(e.target.value)} style={styles.input}>
-                    <option value="">Избери постојка</option>
-                    {busStops.map((stop) => (
-                        <option key={stop.id} value={stop.id}>{stop.name}</option>
-                    ))}
-                </select>
+            <div style={styles.searchContainer}>
+                {/* Search by Arrival Time */}
+                <div style={styles.searchBox}>
+                    <h2 style={styles.searchTitle}>Пребарување по време</h2>
+                    <select
+                        value={busStopId}
+                        onChange={(e) => setBusStopId(e.target.value)}
+                        style={styles.input}
+                    >
+                        <option value="">Избери постојка</option>
+                        {busStops.map((stop) => (
+                            <option key={stop.id} value={stop.id}>{stop.name}</option>
+                        ))}
+                    </select>
+                    <input
+                        type="time"
+                        value={arrivalTime}
+                        onChange={(e) => setArrivalTime(e.target.value)}
+                        style={styles.input}
+                    />
+                    <button onClick={handleFetchByArrivalTime} style={styles.button}>
+                        Најди по време
+                    </button>
+                    <span style={styles.note}>
+            За пребарување по време, внесете и постојка и време.
+          </span>
+                </div>
 
-                <input
-                    type="text"
-                    placeholder="Внеси број на автобус"
-                    value={busId}
-                    onChange={(e) => setBusId(e.target.value)}
-                    style={styles.input}
-                />
-
-                <input
-                    type="time"
-                    value={arrivalTime}
-                    onChange={(e) => setArrivalTime(e.target.value)}
-                    style={styles.input}
-                />
-
-                <button onClick={handleFetchByBusStop} style={styles.button}>Најди по постојка</button>
-                <button onClick={handleFetchByBusId} style={styles.button}>Најди по автобус</button>
-                <button onClick={handleFetchByArrivalTime} style={styles.button}>Најди по време</button>
-
-                {error && <p style={styles.error}>{error}</p>}
+                {/* Search by Bus ID */}
+                <div style={{ ...styles.searchBox, ...styles.busIdSearchBox }}>
+                    <h2 style={styles.searchTitle}>Пребарување по автобус</h2>
+                    <input
+                        type="text"
+                        placeholder="Внеси број на автобус"
+                        value={busId}
+                        onChange={(e) => setBusId(e.target.value)}
+                        style={styles.input2}
+                    />
+                    <button onClick={handleFetchByBusId} style={styles.button}>
+                        Најди по автобус
+                    </button>
+                </div>
             </div>
 
-            {/* Bus Schedule List */}
+            <button onClick={handleReset} style={styles.resetButton}>Рестартирај</button>
+
+            {error && <p style={styles.error}>{error}</p>}
+
             <ul style={styles.list}>
                 {schedules.length > 0 ? (
                     schedules.map((schedule) => (
                         <li key={schedule.id} style={styles.listItem}>
-                            <strong>Автобус:</strong> {schedule.bus.busNumber} | <strong>Постојка:</strong> {schedule.busStop.name} | <strong>Време:</strong> {schedule.arrivalTime}
+                            <div style={styles.scheduleItem}>
+                                <span style={styles.scheduleLabel}><strong>Автобус:</strong></span>
+                                <span>{schedule.bus.busNumber}</span>
+                            </div>
+                            <div style={styles.scheduleItem}>
+                                <span style={styles.scheduleLabel}><strong>Постојка:</strong></span>
+                                <span>{schedule.busStop.name}</span>
+                            </div>
+                            <div style={styles.scheduleItem}>
+                                <span style={styles.scheduleLabel}><strong>Време:</strong></span>
+                                <span>{schedule.arrivalTime}</span>
+                            </div>
                         </li>
                     ))
                 ) : (
@@ -122,77 +147,131 @@ const BusScheduleList = () => {
     );
 };
 
-// Styling
 const styles = {
     container: {
-        backgroundColor: "#f5f5f5",
+        maxWidth: "1000px",
+        margin: "0 auto",
+        padding: "20px",
         fontFamily: "'M PLUS Rounded 1c', sans-serif",
         color: "#08374b",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "20px",
+        textAlign: "center",
     },
     title: {
+        paddingTop: "20px",
         fontSize: "2.5rem",
         fontWeight: "bold",
-        color: "#08374b",
         marginBottom: "20px",
+    },
+    searchContainer: {
+        display: "flex",
+        justifyContent: "center",
+        gap: "20px",
+        flexWrap: "wrap",
+        marginBottom: "40px",
+        marginTop: "50px",
     },
     searchBox: {
         backgroundColor: "#fff",
-        padding: "20px",
+        padding: "15px",
         borderRadius: "10px",
         boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-        textAlign: "center",
-        maxWidth: "600px",
-        width: "100%",
+        minWidth: "250px",
+        maxWidth: "400px",
+        flex: "1",
+        border: "1px solid #ccc",
+    },
+    busIdSearchBox: {
+        flexDirection: "column",
+        justifyContent: "center",
+    },
+    searchTitle: {
+        fontSize: "1.3rem",
         marginBottom: "20px",
+        color: "#08374b",
     },
     input: {
-        padding: "10px",
-        fontSize: "1rem",
+        padding: "8px",
+        fontSize: "0.9rem",
         width: "100%",
-        maxWidth: "400px",
+        marginBottom: "10px",
         borderRadius: "5px",
         border: "1px solid #ccc",
-        margin: "10px 0",
+        boxSizing: "border-box",
+        boxShadow: "0 2x 10px rgba(0, 0, 0, 0.1)",
+    },
+    input2: {
+        padding: "8px",
+        fontSize: "0.9rem",
+        width: "100%",
+        marginTop: "50px",
+        marginBottom: "10px",
+        borderRadius: "5px",
+        border: "1px solid #ccc",
+        boxSizing: "border-box",
+        boxShadow: "0 2x 10px rgba(0, 0, 0, 0.1)",
     },
     button: {
-        padding: "10px 15px",
+        padding: "8px 12px",
         backgroundColor: "#08374b",
         color: "#fff",
         border: "none",
         borderRadius: "5px",
-        fontSize: "1rem",
+        fontSize: "0.9rem",
         cursor: "pointer",
-        margin: "5px",
+        width: "100%",
+        marginBottom: "10px",
+    },
+    resetButton: {
+        padding: "8px 12px",
+        backgroundColor: "#fff",
+        color: "#08374b",
+        border: "2px solid #ddd",
+        borderRadius: "5px",
+        fontSize: "0.9rem",
+        cursor: "pointer",
+        marginBottom: "20px",
+    },
+    note: {
+        display: "block",
+        marginTop: "5px",
+        fontSize: "0.8rem",
+        color: "#555",
     },
     error: {
         color: "#f44336",
         fontWeight: "bold",
-        marginTop: "10px",
+        marginBottom: "20px",
     },
     list: {
         listStyleType: "none",
         padding: "0",
-        maxWidth: "600px",
-        width: "100%",
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+        gap: "20px",
     },
     listItem: {
         backgroundColor: "#fff",
         padding: "15px",
         borderRadius: "10px",
         boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-        marginBottom: "10px",
+        border: "1px solid #ccc",
+        textAlign: "left",
+    },
+    scheduleItem: {
+        display: "flex",
+        justifyContent: "space-between",
+        marginBottom: "5px",
+    },
+    scheduleLabel: {
+        marginRight: "10px",
+        color: "#08374b",
     },
     noData: {
         color: "#888",
         fontSize: "1.2rem",
-        textAlign: "center",
     },
+
+
 };
 
 export default BusScheduleList;
