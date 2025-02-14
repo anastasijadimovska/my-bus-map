@@ -39,8 +39,8 @@ const BusList = () => {
     };
 
     return (
-        <div style={{ backgroundColor: "#eef4f8", fontFamily: "'M PLUS Rounded 1c', sans-serif", color: "#08374b", minHeight: "100vh", paddingTop: "80px", display: "flex", flexDirection: "column", alignItems: "center" }}>
-            <h1 style={{ fontSize: "3rem", fontWeight: "bold", marginBottom: "20px", color: "#08374b", textAlign: "center" }}>Автобуси</h1>
+        <div style={{ backgroundColor: "#eef4f8", fontFamily: "'M PLUS Rounded 1c', sans-serif", color: "#08374b", minHeight: "100vh", paddingTop: "50px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <h1 style={{ fontSize: "3rem", fontWeight: "bold", marginBottom: "20px", color: "#08374b", textAlign: "center"}}>Автобуси</h1>
 
             <div style={{ display: "flex", alignItems: "center", backgroundColor: "#fff", padding: "15px", borderRadius: "10px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", marginBottom: "30px" }}>
                 <input
