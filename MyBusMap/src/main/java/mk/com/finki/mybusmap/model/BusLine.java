@@ -1,5 +1,6 @@
 package mk.com.finki.mybusmap.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +22,7 @@ public class BusLine {
     @ManyToOne
     @JoinColumn(name = "bus_id")
     private Bus bus;
-    @OneToMany
+    @JsonBackReference
+    @OneToMany(mappedBy = "busLine")
     private List<BusSchedule> busSchedules;
 }
