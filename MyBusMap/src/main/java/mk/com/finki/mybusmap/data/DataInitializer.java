@@ -75,52 +75,52 @@ public class DataInitializer {
         line5.setBus(bus5);
         line5 = busLineRepository.save(line5);
 
-        List<BusSchedule> line1Schedules = List.of(
-                new BusSchedule(null, savedStops.get(0), bus1, line1, LocalTime.of(6, 20)),
-                new BusSchedule(null, savedStops.get(1), bus1, line1, LocalTime.of(6, 30)),
-                new BusSchedule(null, savedStops.get(2), bus1, line1, LocalTime.of(6, 35)),
-                new BusSchedule(null, savedStops.get(3), bus1, line1, LocalTime.of(6, 45))
-        );
-        List<BusSchedule> savedLine1Schedules = busScheduleRepository.saveAll(line1Schedules);
-        line1.setBusSchedules(savedLine1Schedules);
-        busLineRepository.save(line1);
-
-        List<BusSchedule> line4Schedules = List.of(
-                new BusSchedule(null, savedStops.get(4), bus2, line4, LocalTime.of(6, 15)),
-                new BusSchedule(null, savedStops.get(1), bus2, line4, LocalTime.of(6, 25)),
-                new BusSchedule(null, savedStops.get(3), bus2, line4, LocalTime.of(6, 35)),
-                new BusSchedule(null, savedStops.get(5), bus2, line4, LocalTime.of(6, 45))
-        );
-        List<BusSchedule> savedLine4Schedules = busScheduleRepository.saveAll(line4Schedules);
-        line4.setBusSchedules(savedLine4Schedules);
-        busLineRepository.save(line4);
-
-        List<BusSchedule> schedules = new ArrayList<>();
-
-        schedules.add(new BusSchedule(null, savedStops.get(0), bus5, line5, LocalTime.of(6, 15)));
-        schedules.add(new BusSchedule(null, savedStops.get(0), bus5, line5, LocalTime.of(7, 0)));
-        schedules.add(new BusSchedule(null, savedStops.get(0), bus5, line5, LocalTime.of(7, 45)));
-        schedules.add(new BusSchedule(null, savedStops.get(0), bus5, line5, LocalTime.of(8, 30)));
-
-        schedules.add(new BusSchedule(null, savedStops.get(1), bus5, line5, LocalTime.of(6, 25)));
-        schedules.add(new BusSchedule(null, savedStops.get(1), bus5, line5, LocalTime.of(7, 10)));
-        schedules.add(new BusSchedule(null, savedStops.get(1), bus5, line5, LocalTime.of(7, 55)));
-        schedules.add(new BusSchedule(null, savedStops.get(1), bus5, line5, LocalTime.of(8, 40)));
-
-        schedules.add(new BusSchedule(null, savedStops.get(2), bus5, line5, LocalTime.of(6, 30)));
-        schedules.add(new BusSchedule(null, savedStops.get(2), bus5, line5, LocalTime.of(7, 15)));
-        schedules.add(new BusSchedule(null, savedStops.get(2), bus5, line5, LocalTime.of(8, 0)));
-        schedules.add(new BusSchedule(null, savedStops.get(2), bus5, line5, LocalTime.of(8, 45)));
-
-        schedules.add(new BusSchedule(null, savedStops.get(3), bus5, line5, LocalTime.of(6, 40)));
-        schedules.add(new BusSchedule(null, savedStops.get(3), bus5, line5, LocalTime.of(7, 25)));
-        schedules.add(new BusSchedule(null, savedStops.get(3), bus5, line5, LocalTime.of(8, 10)));
-        schedules.add(new BusSchedule(null, savedStops.get(3), bus5, line5, LocalTime.of(8, 55)));
-
-        List<BusSchedule> savedSchedules = busScheduleRepository.saveAll(schedules);
-
-        line5.setBusSchedules(savedSchedules);
-        busLineRepository.save(line5);
+//        List<BusSchedule> line1Schedules = List.of(
+//                new BusSchedule(null, savedStops.get(0), bus1, line1, LocalTime.of(6, 20)),
+//                new BusSchedule(null, savedStops.get(1), bus1, line1, LocalTime.of(6, 30)),
+//                new BusSchedule(null, savedStops.get(2), bus1, line1, LocalTime.of(6, 35)),
+//                new BusSchedule(null, savedStops.get(3), bus1, line1, LocalTime.of(6, 45))
+//        );
+//        List<BusSchedule> savedLine1Schedules = busScheduleRepository.saveAll(line1Schedules);
+//        line1.setBusSchedules(savedLine1Schedules);
+//        busLineRepository.save(line1);
+//
+//        List<BusSchedule> line4Schedules = List.of(
+//                new BusSchedule(null, savedStops.get(4), bus2, line4, LocalTime.of(6, 15)),
+//                new BusSchedule(null, savedStops.get(1), bus2, line4, LocalTime.of(6, 25)),
+//                new BusSchedule(null, savedStops.get(3), bus2, line4, LocalTime.of(6, 35)),
+//                new BusSchedule(null, savedStops.get(5), bus2, line4, LocalTime.of(6, 45))
+//        );
+//        List<BusSchedule> savedLine4Schedules = busScheduleRepository.saveAll(line4Schedules);
+//        line4.setBusSchedules(savedLine4Schedules);
+//        busLineRepository.save(line4);
+//
+//        List<BusSchedule> schedules = new ArrayList<>();
+//
+//        schedules.add(new BusSchedule(null, savedStops.get(0), bus5, line5, LocalTime.of(6, 15)));
+//        schedules.add(new BusSchedule(null, savedStops.get(0), bus5, line5, LocalTime.of(7, 0)));
+//        schedules.add(new BusSchedule(null, savedStops.get(0), bus5, line5, LocalTime.of(7, 45)));
+//        schedules.add(new BusSchedule(null, savedStops.get(0), bus5, line5, LocalTime.of(8, 30)));
+//
+//        schedules.add(new BusSchedule(null, savedStops.get(1), bus5, line5, LocalTime.of(6, 25)));
+//        schedules.add(new BusSchedule(null, savedStops.get(1), bus5, line5, LocalTime.of(7, 10)));
+//        schedules.add(new BusSchedule(null, savedStops.get(1), bus5, line5, LocalTime.of(7, 55)));
+//        schedules.add(new BusSchedule(null, savedStops.get(1), bus5, line5, LocalTime.of(8, 40)));
+//
+//        schedules.add(new BusSchedule(null, savedStops.get(2), bus5, line5, LocalTime.of(6, 30)));
+//        schedules.add(new BusSchedule(null, savedStops.get(2), bus5, line5, LocalTime.of(7, 15)));
+//        schedules.add(new BusSchedule(null, savedStops.get(2), bus5, line5, LocalTime.of(8, 0)));
+//        schedules.add(new BusSchedule(null, savedStops.get(2), bus5, line5, LocalTime.of(8, 45)));
+//
+//        schedules.add(new BusSchedule(null, savedStops.get(3), bus5, line5, LocalTime.of(6, 40)));
+//        schedules.add(new BusSchedule(null, savedStops.get(3), bus5, line5, LocalTime.of(7, 25)));
+//        schedules.add(new BusSchedule(null, savedStops.get(3), bus5, line5, LocalTime.of(8, 10)));
+//        schedules.add(new BusSchedule(null, savedStops.get(3), bus5, line5, LocalTime.of(8, 55)));
+//
+//        List<BusSchedule> savedSchedules = busScheduleRepository.saveAll(schedules);
+//
+//        line5.setBusSchedules(savedSchedules);
+//        busLineRepository.save(line5);
 
         UserInfo userInfo = new UserInfo();
         userInfo.setEmail("john.doe@gmail.com");

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { getAllBusStops, searchBusStopByName, deleteBusStop } from '../api/busStopService';
-import { FaSearch, FaTrashAlt } from 'react-icons/fa';
+import { getAllBusStops, searchBusStopByName } from '../api/busStopService';
+import { FaSearch } from 'react-icons/fa';
 
 const BusStopList = () => {
     const [busStops, setBusStops] = useState([]); // All bus stops
@@ -13,8 +13,8 @@ const BusStopList = () => {
         getAllBusStops()
             .then((data) => setBusStops(data))
             .catch((err) => {
-                console.error("Error fetching bus stops:", err);
-                setError('Failed to load bus stops. Please try again later.');
+                console.error("Грешка при вчитувањето постојка:", err);
+                setError('Грешка при вчитувањето постојка. Обидете се повторно.');
             });
     }, []);
 
@@ -32,11 +32,11 @@ const BusStopList = () => {
                 setError('');
             } else {
                 setSearchResult(null);
-                setError('No bus stop found with the given name.');
+                setError('Не постои постојка со пребараното име.');
             }
         } catch (err) {
-            console.error("Error searching bus stop:", err);
-            setError('Failed to search bus stop. Please try again later.');
+            console.error("Грешка при пребарувањето постојка:", err);
+            setError('Грешка при пребарувањето постојка. Обидете се повторно');
         }
     };
 
@@ -48,15 +48,6 @@ const BusStopList = () => {
     };
 
     // Handle bus stop deletion
-    const handleDelete = async (id) => {
-        try {
-            await deleteBusStop(id);
-            setBusStops((prevStops) => prevStops.filter((stop) => stop.id !== id));
-        } catch (err) {
-            console.error("Error deleting bus stop:", err);
-            setError('Failed to delete bus stop. Please try again later.');
-        }
-    };
 
     return (
         <div style={styles.container}>

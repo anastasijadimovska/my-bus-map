@@ -2,6 +2,9 @@ import api from './axiosConfig';
 
 export const getAllBusLines = async () => {
     const response = await api.get('/api/bus-line');
+    if (typeof response.data === "string") {
+        return JSON.parse(response.data);
+    }
     return response.data;
 };
 
