@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { getAllBusLines, getBusLinesBetweenStops } from '../api/busLineService';
+import { saveBusLineForUser } from '../api/savedBusLinesService';
+import { FaRegBookmark, FaBookmark } from 'react-icons/fa';
 
 const BusLineList = () => {
     const [busLines, setBusLines] = useState([]);
     const [fromStop, setFromStop] = useState('');
     const [toStop, setToStop] = useState('');
     const [error, setError] = useState('');
+    const [savedBusLineIds, setSavedBusLineIds] = useState([]);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
         loadBusLines();
+        // Check if a token exists (user is logged in)
+        const token = localStorage.getItem('authToken');
+        setIsLoggedIn(!!token);
     }, []);
 
     const loadBusLines = async () => {
@@ -42,6 +49,17 @@ const BusLineList = () => {
         }
     };
 
+    const handleSave = async (busLineId) => {
+        try {
+            await saveBusLineForUser(busLineId);
+            setSavedBusLineIds((prev) => [...prev, busLineId]);
+            alert("Линијата е успешно зачувана.");
+        } catch (err) {
+            console.error(err);
+            alert("Грешка при зачувување на линијата.");
+        }
+    };
+
     return (
         <div style={{ fontFamily: "'M PLUS Rounded 1c', sans-serif", backgroundColor: "#eef4f8", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", paddingTop: "40px" }}>
             <h1 style={{ fontSize: "2.5rem", color: "#08374b", fontWeight: "bold", marginBottom: "20px" }}>Автобуски Линии</h1>
@@ -66,8 +84,7 @@ const BusLineList = () => {
                 />
                 <button onClick={handleSearch} style={{ padding: "10px 20px", backgroundColor: "#08374b", color: "white", border: "none", borderRadius: "8px", fontSize: "1rem", cursor: "pointer", marginLeft: "10px", transition: "background 0.3s" }}
                         onMouseEnter={(e) => (e.target.style.backgroundColor = "#0a4861")}
-                        onMouseLeave={(e) => (e.target.style.backgroundColor = "#08374b")}
-                >
+                        onMouseLeave={(e) => (e.target.style.backgroundColor = "#08374b")}>
                     Пребарај
                 </button>
             </div>
@@ -76,12 +93,26 @@ const BusLineList = () => {
                 {busLines.map((line) => (
                     <li key={line.id} style={{
                         backgroundColor: "#fff", padding: "20px", marginBottom: "15px", borderRadius: "12px", boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-                        textAlign: "center", fontSize: "1.3rem", color: "#08374b", fontWeight: "bold", transition: "transform 0.2s, box-shadow 0.2s"
+                        textAlign: "center", fontSize: "1.3rem", color: "#08374b", fontWeight: "bold", transition: "transform 0.2s, box-shadow 0.2s",
+                        display: "flex", alignItems: "center", justifyContent: "space-between"
                     }}
-                        onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.03)"; e.currentTarget.style.boxShadow = "0 6px 12px rgba(0, 0, 0, 0.2)"; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.1)"; }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = "scale(1.03)";
+                            e.currentTarget.style.boxShadow = "0 6px 12px rgba(0, 0, 0, 0.2)";
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = "scale(1)";
+                            e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.1)";
+                        }}
                     >
-                        {line.name} - {line.bus.ownerName}
+            <span>
+              {line.name} - {line.bus.ownerName}
+            </span>
+                        {isLoggedIn && (
+                            <span onClick={() => handleSave(line.id)} style={{ cursor: "pointer", marginLeft: "10px" }}>
+                {savedBusLineIds.includes(line.id) ? <FaBookmark color="#08374b" size={24} /> : <FaRegBookmark color="#08374b" size={24} />}
+              </span>
+                        )}
                     </li>
                 ))}
             </ul>

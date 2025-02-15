@@ -9,17 +9,22 @@ import BusStopList from "./pages/BusStopList";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import BusLineList from "./pages/BusLineList";
+import Maps from "./pages/Maps"
+import SavedBusLinesList from "./pages/SavedBusLinesList";
 
 function App() {
   return (
       <Router>
         <HeaderNav/>
           <Routes>
-              <Route path={"/home"} element={<HomePage/>}></Route>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/home" element={<HomePage />} />
               <Route path="/buses" element={<BusList />} />
               <Route path="/schedules" element={<BusScheduleList />} />
               <Route path="/bus-stops" element={<BusStopList />} />
               <Route path="/bus-lines" element={<BusLineList />} />
+              <Route path="/maps" element={<Maps />} />
+              <Route path="/saved-bus-lines" element={<SavedBusLinesList />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
           </Routes>

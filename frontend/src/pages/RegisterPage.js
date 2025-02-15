@@ -1,24 +1,23 @@
-import React, { useState } from 'react';
-import { registerUser } from '../api/authService';
-import { useNavigate } from 'react-router-dom';
-import { FaUser, FaEnvelope, FaLock } from 'react-icons/fa';
+import React, { useState } from "react";
+import { registerUser } from "../api/authService";
+import { useNavigate } from "react-router-dom";
+import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
 
 const RegisterPage = () => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        const registerData = {
-            "name" : name, "email": email, "password": password, "roles": "ROLE_USER" }
+        const registerData = { name, email, password, roles: "ROLE_USER" };
         try {
             await registerUser(registerData);
-            navigate('/login');
+            navigate("/login");
         } catch (err) {
-            setError('Registration failed. Please try again.');
+            setError("Registration failed. Please try again.");
         }
     };
 
@@ -48,7 +47,13 @@ const RegisterPage = () => {
                     color: "#08374b",
                 }}
             >
-                <h1 style={{ fontSize: "2.5rem", fontWeight: "bold", marginBottom: "20px" }}>
+                <h1
+                    style={{
+                        fontSize: "2.5rem",
+                        fontWeight: "bold",
+                        marginBottom: "20px",
+                    }}
+                >
                     Регистрација
                 </h1>
 
@@ -148,8 +153,12 @@ const RegisterPage = () => {
                             cursor: "pointer",
                             transition: "background-color 0.3s",
                         }}
-                        onMouseEnter={(e) => (e.target.style.backgroundColor = "#0a5275")}
-                        onMouseLeave={(e) => (e.target.style.backgroundColor = "#08374b")}
+                        onMouseEnter={(e) =>
+                            (e.target.style.backgroundColor = "#0a5275")
+                        }
+                        onMouseLeave={(e) =>
+                            (e.target.style.backgroundColor = "#08374b")
+                        }
                     >
                         Регистрирај се
                     </button>
