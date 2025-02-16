@@ -17,7 +17,7 @@ export const saveBusLineForUser = async (busLineId) => {
         busLineIds: [busLineId]
     };
 
-    const response = await api.post(`${API_URL}/add`, dto, {
+    const response = await api.post(`${API_URL}/edit/${email}`, dto, {
         headers: {
             Authorization: `Bearer ${token}`
         }

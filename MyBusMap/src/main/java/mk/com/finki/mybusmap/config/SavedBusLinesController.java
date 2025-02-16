@@ -28,9 +28,9 @@ public class SavedBusLinesController {
         return savedBusLinesService.createSavedBusLines(savedBusLinesDto);
     }
 
-    @PostMapping("/edit/{id}")
-    public SavedBusLines updateSavedBusLines(@PathVariable Long id, @RequestBody SavedBusLinesDto savedBusLinesDto) {
-        return savedBusLinesService.updateSavedBusLines(id, savedBusLinesDto);
+    @PostMapping("/edit/{email}")
+    public SavedBusLines updateSavedBusLines(@PathVariable String email, @RequestBody SavedBusLinesDto savedBusLinesDto) {
+        return savedBusLinesService.updateSavedBusLines(email, savedBusLinesDto);
     }
     @GetMapping("/delete/{id}")
     public void deleteSavedBusLines(@PathVariable Long id) {

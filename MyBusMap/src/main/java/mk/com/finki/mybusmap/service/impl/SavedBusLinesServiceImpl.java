@@ -55,17 +55,23 @@ public class SavedBusLinesServiceImpl implements SavedBusLinesService {
     }
 
     @Override
-    public SavedBusLines updateSavedBusLines(Long id, SavedBusLinesDto savedBusLinesDto) {
-        SavedBusLines foundSavedBusLines = savedBusLinesRepository.findById(id).orElseThrow(() -> {
-            log.error("Saved bus lines with id {} not found", id);
-            return new ResourceNotFoundException("Saved bus lines with id "+ id +" not found");
+    public SavedBusLines updateSavedBusLines(String email, SavedBusLinesDto savedBusLinesDto) {
+        SavedBusLines foundSavedBusLines ;
+        if(savedBusLinesRepository.findByUserInfo_Email(email).isEmpty()) {
+            return createSavedBusLines(savedBusLinesDto);
+        }
+        foundSavedBusLines = savedBusLinesRepository.findByUserInfo_Email(email).orElseThrow(() -> {
+            log.error("Saved bus lines for user with email {} not found", email);
+            return new ResourceNotFoundException("Saved bus lines for user with email "+ email +" not found");
         });
         List<BusLine> busLines = busLineRepository.findAllById(savedBusLinesDto.getBusLineIds());
         UserInfo userInfo = userInfoRepository.findByEmail(savedBusLinesDto.getEmail()).orElseThrow(() -> {
             log.error("User info with id {} not found", savedBusLinesDto.getEmail());
             return new ResourceNotFoundException("User info with id "+ savedBusLinesDto.getEmail() +" not found");
         });
-        foundSavedBusLines.setBusLines(busLines);
+        List<BusLine> savedBusLines = foundSavedBusLines.getBusLines();
+        savedBusLines.addAll(busLines);
+        foundSavedBusLines.setBusLines(savedBusLines);
         foundSavedBusLines.setUserInfo(userInfo);
         SavedBusLines savedSavedBusLines = savedBusLinesRepository.save(foundSavedBusLines);
         log.info("Saved bus lines for user {} have been updated", userInfo.getEmail());
