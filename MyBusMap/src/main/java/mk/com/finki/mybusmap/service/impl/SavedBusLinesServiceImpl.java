@@ -13,7 +13,10 @@ import mk.com.finki.mybusmap.repository.UserInfoRepository;
 import mk.com.finki.mybusmap.service.SavedBusLinesService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -53,24 +56,37 @@ public class SavedBusLinesServiceImpl implements SavedBusLinesService {
             return new ResourceNotFoundException("Saved bus lines for user with email "+ email +" not found");
         });
     }
-
     @Override
-    public SavedBusLines updateSavedBusLines(Long id, SavedBusLinesDto savedBusLinesDto) {
-        SavedBusLines foundSavedBusLines = savedBusLinesRepository.findById(id).orElseThrow(() -> {
-            log.error("Saved bus lines with id {} not found", id);
-            return new ResourceNotFoundException("Saved bus lines with id "+ id +" not found");
+    public SavedBusLines updateSavedBusLines(String email, SavedBusLinesDto savedBusLinesDto) {
+        SavedBusLines foundSavedBusLines;
+
+        if (savedBusLinesRepository.findByUserInfo_Email(email).isEmpty()) {
+            return createSavedBusLines(savedBusLinesDto);
+        }
+
+        foundSavedBusLines = savedBusLinesRepository.findByUserInfo_Email(email).orElseThrow(() -> {
+            log.error("Saved bus lines for user with email {} not found", email);
+            return new ResourceNotFoundException("Saved bus lines for user with email " + email + " not found");
         });
+
         List<BusLine> busLines = busLineRepository.findAllById(savedBusLinesDto.getBusLineIds());
         UserInfo userInfo = userInfoRepository.findByEmail(savedBusLinesDto.getEmail()).orElseThrow(() -> {
             log.error("User info with id {} not found", savedBusLinesDto.getEmail());
-            return new ResourceNotFoundException("User info with id "+ savedBusLinesDto.getEmail() +" not found");
+            return new ResourceNotFoundException("User info with id " + savedBusLinesDto.getEmail() + " not found");
         });
-        foundSavedBusLines.setBusLines(busLines);
+
+        Set<BusLine> uniqueBusLines = new HashSet<>(foundSavedBusLines.getBusLines());
+        uniqueBusLines.addAll(busLines);
+
+        foundSavedBusLines.setBusLines(new ArrayList<>(uniqueBusLines));
         foundSavedBusLines.setUserInfo(userInfo);
+
         SavedBusLines savedSavedBusLines = savedBusLinesRepository.save(foundSavedBusLines);
         log.info("Saved bus lines for user {} have been updated", userInfo.getEmail());
+
         return savedSavedBusLines;
     }
+
 
     @Override
     public void deleteSavedBusLines(Long id) {

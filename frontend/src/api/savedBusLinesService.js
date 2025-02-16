@@ -1,12 +1,7 @@
-import axios from 'axios';
+import api from './axiosConfig';
 
-const API_URL = '/api/saved-bus-lines';
+const API_URL = 'http://localhost:8080/api/saved-bus-lines'; // Updated API URL
 
-/**
- * Saves a bus line for the current user.
- * The DTO expects { email: string, busLineIds: number[] }.
- * We now use the actual email stored in localStorage.
- */
 export const saveBusLineForUser = async (busLineId) => {
     const token = localStorage.getItem('authToken');
     const email = localStorage.getItem('userEmail');
@@ -22,7 +17,7 @@ export const saveBusLineForUser = async (busLineId) => {
         busLineIds: [busLineId]
     };
 
-    const response = await axios.post(`${API_URL}/add`, dto, {
+    const response = await api.post(`${API_URL}/edit/${email}`, dto, {
         headers: {
             Authorization: `Bearer ${token}`
         }
@@ -30,10 +25,6 @@ export const saveBusLineForUser = async (busLineId) => {
     return response.data;
 };
 
-/**
- * Retrieves saved bus lines for the current user.
- * Uses the actual email stored in localStorage.
- */
 export const getSavedBusLinesForUser = async () => {
     const token = localStorage.getItem('authToken');
     const email = localStorage.getItem('userEmail');
@@ -44,7 +35,7 @@ export const getSavedBusLinesForUser = async () => {
         throw new Error("User email is not available");
     }
 
-    const response = await axios.get(`${API_URL}/user/${email}`, {
+    const response = await api.get(`${API_URL}/user/${encodeURIComponent(email)}`, {
         headers: {
             Authorization: `Bearer ${token}`
         }
