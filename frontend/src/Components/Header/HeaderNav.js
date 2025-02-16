@@ -1,10 +1,12 @@
 // HeaderNav.js
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
+import {logoutUser} from "../../api/authService";
 
 const HeaderNav = () => {
+    const navigate = useNavigate();
     const location = useLocation();
     const [weather, setWeather] = useState(null);
     const [error, setError] = useState(null);
@@ -53,8 +55,12 @@ const HeaderNav = () => {
 
     // Logout function
     const handleLogout = () => {
-        localStorage.removeItem("authToken");
-        setIsLoggedIn(false);
+        logoutUser().then((response)=>{
+            setIsLoggedIn(false);
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("userEmail");
+            navigate("/home");
+        })
     };
 
     return (

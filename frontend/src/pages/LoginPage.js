@@ -17,7 +17,8 @@ const LoginPage = () => {
         }
         try {
             const token = await loginUser({ email, password });
-            localStorage.setItem('authToken', token); // Save JWT token
+            localStorage.setItem('authToken', token);
+            localStorage.setItem("userEmail", email)// Save JWT token
             navigate('/home'); // Redirect to home or protected page
         } catch {
             setError('Invalid credentials. Please try again.');
