@@ -1,21 +1,21 @@
+// HeaderNav.js
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
+import {logoutUser} from "../../api/authService";
 
 const HeaderNav = () => {
+    const navigate = useNavigate();
     const location = useLocation();
     const [weather, setWeather] = useState(null);
     const [error, setError] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    // Check if user is logged in on component mount
+    // Re-check login state on every route change
     useEffect(() => {
-        const token = localStorage.getItem("authToken");
-        if (token) {
-            setIsLoggedIn(true);
-        }
-    }, []);
+        setIsLoggedIn(!!localStorage.getItem("authToken"));
+    }, [location]);
 
     // Fetch weather data
     useEffect(() => {
@@ -42,7 +42,7 @@ const HeaderNav = () => {
     // Check if link is active based on current path
     const isActive = (path) => location.pathname === path;
 
-    // Navigation items
+    // Navigation items including the new "Мои Линии"
     const navItems = [
         { name: "Дома", path: "/home" },
         { name: "Автобуси", path: "/buses" },
@@ -50,12 +50,17 @@ const HeaderNav = () => {
         { name: "Распоред", path: "/schedules" },
         { name: "Постојки", path: "/bus-stops" },
         { name: "Мапа", path: "/maps" },
+        { name: "Мои Линии", path: "/saved-bus-lines" },
     ];
 
     // Logout function
     const handleLogout = () => {
-        localStorage.removeItem("authToken");
-        setIsLoggedIn(false);
+        logoutUser().then((response)=>{
+            setIsLoggedIn(false);
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("userEmail");
+            navigate("/home");
+        })
     };
 
     return (
