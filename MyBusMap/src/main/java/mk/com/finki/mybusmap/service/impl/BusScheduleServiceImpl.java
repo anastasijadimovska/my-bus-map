@@ -15,9 +15,7 @@ import mk.com.finki.mybusmap.service.BusScheduleService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -118,7 +116,16 @@ public class BusScheduleServiceImpl implements BusScheduleService {
     @Override
     public List<BusSchedule> findAllByArrivalTimeAndBusStop_Id(String arrivalTime, Long busStopId) {
         LocalTime localTime = LocalTime.parse(arrivalTime);
-        List<BusSchedule> busSchedules = busScheduleRepository.findAllByArrivalTimeAndBusStop_Id(localTime, busStopId);
+        LocalTime startTime = localTime.minusMinutes(30);
+        LocalTime endTime = localTime.plusMinutes(30);
+
+        List<BusSchedule> busSchedules = busScheduleRepository.findAllByBusStop_Id(busStopId).stream()
+                .filter(busSchedule -> {
+                    LocalTime busArrivalTime = busSchedule.getArrivalTime();
+                    return !busArrivalTime.isBefore(startTime) && !busArrivalTime.isAfter(endTime);
+                })
+                .collect(Collectors.toList());
+
         if(busSchedules.isEmpty()) {
             log.error("Bus schedules for bus stop with id {} and arrival time {} not found", busStopId, arrivalTime);
             throw new ResourceNotFoundException("Bus schedules for bus stop with id "+ busStopId +" and arrival time "+ arrivalTime +" not found");

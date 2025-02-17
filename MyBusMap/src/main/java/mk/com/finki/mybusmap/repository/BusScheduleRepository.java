@@ -8,14 +8,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalTime;
 import java.util.List;
 
 
 @Repository
 public interface BusScheduleRepository extends JpaRepository<BusSchedule, Long> {
     List<BusSchedule> findAllByBusStop_Id(Long busStopId);
-    List<BusSchedule> findAllByArrivalTimeAndBusStop_Id(LocalTime arrivalTime, Long busStopId);
     List<BusSchedule> findAllByBus_Id(Long busId);
     @Query("SELECT DISTINCT bs1.busLine FROM BusSchedule bs1 JOIN BusSchedule bs2 " +
             "ON bs1.busLine = bs2.busLine " +
